@@ -10,8 +10,10 @@ export class BoardsService {
   getAllBoards(): Board[] {
     return this.boards;
   }
+
   createBoard(CreateBoardDto: CreateBoardDto) {
     const { title, description } = CreateBoardDto;
+
     const board: Board = {
       id: uuid(),
       title,
@@ -19,6 +21,14 @@ export class BoardsService {
       status: BoardStatus.PUBLIC,
     };
     this.boards.push(board);
+    return board;
+  }
+
+  getBoardById(id: string): Board {
+    const board = this.boards.find((board) => board.id === id);
+    if (!board) {
+      throw new Error('Board not found');
+    }
     return board;
   }
 }
