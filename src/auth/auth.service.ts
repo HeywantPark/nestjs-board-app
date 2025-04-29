@@ -1,17 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
-import { UserRepository } from './user.repository';
-import { User } from './user.eneity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './user.entity';
+import { AuthCredentialDto } from './dto/auth-credential.dto';
 
 @Injectable()
 export class AuthService {
-  private userRepository: Repository<User>;
-
   constructor(
-    @InjectDataSource()
-    private dataSource: DataSource,
-  ) {
-    this.userRepository = UserRepository(this.dataSource);
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
+
+  async signUp(authCredentialDto: AuthCredentialDto): Promise<void> {
+    const { username, password } = authCredentialDto;
+    const user = this.userRepository.create({ username, password });
+    await this.userRepository.save(user);
   }
 }
