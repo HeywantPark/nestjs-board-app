@@ -6,6 +6,7 @@ import { Board } from './board.entity';
 import { DataSource } from 'typeorm';
 import { CustomBoardRepository } from './board-custom-repository.interface';
 import { BoardStatus } from './board-status.enum';
+import { User } from 'src/auth/user.entity';
 
 @Injectable()
 export class BoardsService {
@@ -22,8 +23,8 @@ export class BoardsService {
     return this.boardRepository.find();
   }
 
-  createBoard(createBoardDto: CreateBoardDto): Promise<Board> {
-    return this.boardRepository.createBoard(createBoardDto);
+  createBoard(createBoardDto: CreateBoardDto, user: User): Promise<Board> {
+    return this.boardRepository.createBoard(createBoardDto, user);
   }
 
   async getBoardById(id: number): Promise<Board> {
@@ -37,8 +38,8 @@ export class BoardsService {
     return found;
   }
 
-  async deleteBoard(id: number): Promise<void> {
-    const result = await this.boardRepository.delete(id);
+  async deleteBoard(id: number, user: User): Promise<void> {
+    const result = await this.boardRepository.delete({ id, user });
 
     if (result.affected === 0) {
       throw new NotFoundException(`can't find Board with id ${id}`);

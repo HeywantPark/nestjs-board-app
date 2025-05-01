@@ -3,6 +3,7 @@ import { Board } from './board.entity';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { BoardStatus } from './board-status.enum';
 import { CustomBoardRepository } from './board-custom-repository.interface';
+import { User } from 'src/auth/user.entity';
 
 export const BoardRepository = (
   dataSource: DataSource,
@@ -12,6 +13,7 @@ export const BoardRepository = (
     async createBoard(
       this: Repository<Board>,
       createBoardDto: CreateBoardDto,
+      user: User,
     ): Promise<Board> {
       const { title, description } = createBoardDto;
 
@@ -19,6 +21,7 @@ export const BoardRepository = (
         title,
         description,
         status: BoardStatus.PUBLIC,
+        user,
       });
       await this.save(board);
       return board;
